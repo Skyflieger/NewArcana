@@ -1,109 +1,34 @@
-using Godot;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using NewArcana;
+using Godot;
+
+namespace NewArcana.Scripts;
 
 public partial class TopLayer : TileMapLayer
 {
-    public List<Settlement> Settlements { get; set; } = new List<Settlement>();
-    public List<Sanctuary> Sanctuaries { get; set; } = new List<Sanctuary>();
-
     private const float MinDistance = 20.0f;
-
+    
     public override void _Ready()
     {
         CreateSettlement();
+        CreateSanctuary();
         CreateSettlement();
+        CreateSanctuary();
         CreateSettlement();
         CreateSanctuary();
-        CreateSanctuary();
-        CreateSanctuary();
-
-        ConnectSettlementsWithRoads();
     }
-
-    public Settlement CreateSettlement()
-    {
-        Settlement settlement = new Settlement(this);
-        Vector2I position;
-
-        do
-        {
-            position = new Vector2I(GD.RandRange(-30, 30), GD.RandRange(-30, 30));
-        } while (!IsPositionValidForSettlement(position));
-
-        settlement.SpawnSettlement(position);
-        Settlements.Add(settlement);
-
-        return settlement;
-    }
-
-    public Sanctuary CreateSanctuary()
-    {
-        Sanctuary sanctuary = new Sanctuary(this);
-        Vector2I position;
-
-        do
-        {
-            position = new Vector2I(GD.RandRange(-30, 30), GD.RandRange(-30, 30));
-        } while (!IsPositionValidForSanctuary(position));
-
-        sanctuary.SpawnSanctuary(position);
-        Sanctuaries.Add(sanctuary);
-
-        return sanctuary;
-    }
-
-    private bool IsPositionValidForSettlement(Vector2I position)
-    {
-        foreach (Settlement settlement in Settlements)
-        {
-            if (position.DistanceTo(GetSettlementCenter(settlement)) < MinDistance)
-                return false;
-        }
-
-        foreach (Sanctuary sanctuary in Sanctuaries)
-        {
-            if (position.DistanceTo(GetSanctuaryCenter(sanctuary)) < MinDistance)
-                return false;
-        }
-
-        return true;
-    }
-
-    private bool IsPositionValidForSanctuary(Vector2I position)
-    {
-        foreach (Sanctuary sanctuary in Sanctuaries)
-        {
-            if (position.DistanceTo(GetSanctuaryCenter(sanctuary)) < MinDistance)
-                return false;
-        }
-
-        foreach (Settlement settlement in Settlements)
-        {
-            if (position.DistanceTo(GetSettlementCenter(settlement)) < MinDistance)
-                return false;
-        }
-
-        return true;
-    }
-
-    private Vector2I GetSettlementCenter(Settlement settlement)
-    {
-        return settlement.Houses.Count > 0 ? new Vector2I(settlement.Houses.Keys.First().X, settlement.Houses.Keys.First().Y) : Vector2I.Zero;
-    }
-
-    private Vector2I GetSanctuaryCenter(Sanctuary sanctuary)
-    {
-        return sanctuary.Trees.Count > 0 ? new Vector2I(sanctuary.Trees.Keys.First().X, sanctuary.Trees.Keys.First().Y) : Vector2I.Zero;
-    }
-
+    
     public void SetCell(Vector2I position, TopLayerTiles tile)
     {
+        (int, Vector2I) info = GetTileInfo(tile);
+
+        SetCell(position, info.Item1, info.Item2);
+    }
+
+    private (int, Vector2I) GetTileInfo(TopLayerTiles tile)
+    {
         int sourceId = 0;
-        Vector2I tileSetPosition = Vector2I.Zero;
-        
+        Vector2I tileSetPosition;
+
         switch (tile)
         {
             case TopLayerTiles.House:
@@ -116,79 +41,55 @@ public partial class TopLayer : TileMapLayer
                 break;
             case TopLayerTiles.Tree:
                 sourceId = 1;
-                tileSetPosition = new Vector2I(0, 0);
+                tileSetPosition = new Vector2I(GD.RandRange(0, 2), 0);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(tile), tile, null);
         }
         
-        SetCell(position, sourceId, tileSetPosition);
+        return (sourceId, tileSetPosition);
     }
-
-    private void ConnectSettlementsWithRoads()
+    public bool IsCellOfType(Vector2I position, TopLayerTiles tileType)
     {
-        if (Settlements.Count < 2)
-            return;
-
-        List<Vector2I> settlementCenters = Settlements
-            .Select(GetSettlementCenter)
-            .Where(center => center != Vector2I.Zero)
-            .ToList();
-
-        HashSet<Vector2I> visited = new HashSet<Vector2I>();
-        PriorityQueue<(Vector2I from, Vector2I to, int distance), int> priorityQueue = new PriorityQueue<(Vector2I from, Vector2I to, int distance), int>();
-
-        visited.Add(settlementCenters[0]);
-
-        foreach (Vector2I center in settlementCenters)
-        {
-            if (center != settlementCenters[0])
-            {
-                int distance = ManhattanDistance(settlementCenters[0], center);
-                priorityQueue.Enqueue((settlementCenters[0], center, distance), distance);
-            }
-        }
-
-        while (visited.Count < settlementCenters.Count && priorityQueue.Count > 0)
-        {
-            (Vector2I from, Vector2I to, int distance) = priorityQueue.Dequeue();
-
-            if (visited.Contains(to))
-                continue;
-
-            visited.Add(to);
-            CreateRoadBetween(from, to);
-
-            foreach (Vector2I center in settlementCenters)
-            {
-                if (!visited.Contains(center))
-                {
-                    int newDistance = ManhattanDistance(to, center);
-                    priorityQueue.Enqueue((to, center, newDistance), newDistance);
-                }
-            }
-        }
-    }
-
-    private void CreateRoadBetween(Vector2I start, Vector2I end)
-    {
-        Vector2I current = start;
-
-        while (current.X != end.X)
-        {
-            current.X += current.X < end.X ? 1 : -1;
-            SetCell(current, TopLayerTiles.Street);
-        }
-
-        while (current.Y != end.Y)
-        {
-            current.Y += current.Y < end.Y ? 1 : -1;
-            SetCell(current, TopLayerTiles.Street);
-        }
+        (int id, Vector2I tileSetPosition) = GetTileInfo(tileType);
+        return GetCellSourceId(position) == id && GetCellAtlasCoords(position) == tileSetPosition;
     }
 
     private int ManhattanDistance(Vector2I a, Vector2I b)
     {
         return Mathf.Abs(a.X - b.X) + Mathf.Abs(a.Y - b.Y);
+    }
+    public TopLayerTiles? GetCellTileType(Vector2I position)
+    {
+        int cellSourceId = GetCellSourceId(position);
+        Vector2I cellTileSetPosition = GetCellAtlasCoords(position);
+
+        foreach (TopLayerTiles tile in Enum.GetValues(typeof(TopLayerTiles)))
+        {
+            (int id, Vector2I tileSetPosition) = GetTileInfo(tile);
+
+            if (cellSourceId == id && cellTileSetPosition == tileSetPosition)
+            {
+                return tile;
+            }
+        }
+        
+        return null;
+    }
+
+    public void OnMonthPassed(int month, int year)
+    {
+        foreach (Settlement settlement in Settlements)
+        {
+            settlement.EvolveStreet(Vector2I.Zero);
+        }
+    }
+    
+    public void OnYearPassed(int year)
+    {
+        foreach (Settlement settlement in Settlements)
+        {
+            settlement.EvolveHouse();
+        }
     }
 }
