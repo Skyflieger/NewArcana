@@ -9,7 +9,7 @@ public partial class GroundLayer : TileMapLayer
 		{
 			for (int j = -50; j < 50; j++)
 			{
-				SetCell(new Vector2I(i, j), 0, new Vector2I(0, 2));
+				SetCell(new Vector2I(i, j), 0, new Vector2I(0, 1));
 			}
 		}
 		base._Ready();

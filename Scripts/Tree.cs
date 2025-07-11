@@ -1,6 +1,6 @@
 namespace NewArcana;
 
-public class House
+public class Tree
 {
     
 }

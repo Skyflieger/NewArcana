@@ -1,0 +1,57 @@
+[gd_scene load_steps=12 format=3 uid="uid://bbin7lacofmrl"]
+
+[ext_resource type="Texture2D" uid="uid://btrkmypx1qkvh" path="res://TileSets/GroundLayerTileSet.png" id="1_i6g32"]
+[ext_resource type="Script" uid="uid://e6ab1lis1e2d" path="res://Scripts/GroundLayer.cs" id="2_1l0tm"]
+[ext_resource type="Texture2D" uid="uid://cpj44740nu2en" path="res://TileSets/HumanityTileSet.png" id="3_v158k"]
+[ext_resource type="Texture2D" uid="uid://bpcl18n4bqd48" path="res://TileSets/SpiritsTileSet.png" id="4_h4fw4"]
+[ext_resource type="Script" uid="uid://5fm3hd3f5ses" path="res://Scripts/TopLayer.cs" id="5_ldgsr"]
+[ext_resource type="Script" uid="uid://dubnolxaf6p2w" path="res://Scripts/Camera.cs" id="6_o5yvi"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_eow3j"]
+texture = ExtResource("1_i6g32")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+0:1/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_mwb40"]
+tile_shape = 1
+tile_layout = 5
+tile_size = Vector2i(32, 16)
+sources/0 = SubResource("TileSetAtlasSource_eow3j")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ryrav"]
+texture = ExtResource("3_v158k")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+0:0/0/texture_origin = Vector2i(0, 8)
+0:1/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_j5wjh"]
+texture = ExtResource("4_h4fw4")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+0:0/0/texture_origin = Vector2i(0, 10)
+
+[sub_resource type="TileSet" id="TileSet_eow3j"]
+tile_shape = 1
+tile_layout = 5
+tile_size = Vector2i(32, 16)
+sources/0 = SubResource("TileSetAtlasSource_ryrav")
+sources/1 = SubResource("TileSetAtlasSource_j5wjh")
+
+[node name="Game" type="Node2D"]
+scale = Vector2(3.79547, 2.63121)
+
+[node name="GroundLayer" type="TileMapLayer" parent="."]
+texture_filter = 1
+tile_set = SubResource("TileSet_mwb40")
+script = ExtResource("2_1l0tm")
+
+[node name="TopLayer" type="TileMapLayer" parent="."]
+texture_filter = 1
+tile_set = SubResource("TileSet_eow3j")
+script = ExtResource("5_ldgsr")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(0.5, 0.5)
+script = ExtResource("6_o5yvi")

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cv08v0vwgmd03"
-path="res://.godot/imported/Isometric-Houses-1.png-2b5ab5f0128531b3f95bbd32dd478c68.ctex"
+uid="uid://cpj44740nu2en"
+path="res://.godot/imported/HumanityTileSet.png-c93ba12a47847ea88ce72d608e86e51a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Isometric-Houses-1.png"
-dest_files=["res://.godot/imported/Isometric-Houses-1.png-2b5ab5f0128531b3f95bbd32dd478c68.ctex"]
+source_file="res://TileSets/HumanityTileSet.png"
+dest_files=["res://.godot/imported/HumanityTileSet.png-c93ba12a47847ea88ce72d608e86e51a.ctex"]
 
 [params]
 

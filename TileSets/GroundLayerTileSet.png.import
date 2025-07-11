@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cpj44740nu2en"
-path="res://.godot/imported/HumanityTileSet.png-eac94b3d09cca8d99ffdf99d347a4b28.ctex"
+uid="uid://btrkmypx1qkvh"
+path="res://.godot/imported/GroundLayerTileSet.png-a47d28dc1ba2289efe5192949ae92060.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://HumanityTileSet.png"
-dest_files=["res://.godot/imported/HumanityTileSet.png-eac94b3d09cca8d99ffdf99d347a4b28.ctex"]
+source_file="res://TileSets/GroundLayerTileSet.png"
+dest_files=["res://.godot/imported/GroundLayerTileSet.png-a47d28dc1ba2289efe5192949ae92060.ctex"]
 
 [params]
 
