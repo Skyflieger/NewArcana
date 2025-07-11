@@ -1,13 +1,14 @@
-using System.Collections.Generic;
+using System;
 using Godot;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace NewArcana;
+namespace NewArcana.Scripts;
 
 public class Settlement
 {
-    public Dictionary<Vector2I, House> Houses = new Dictionary<Vector2I, House>();
-    private TopLayer _topLayer;
-
+    private readonly TopLayer _topLayer;
+    private Vector2I centerPosition;
     public Settlement(TopLayer topLayer)
     {
         _topLayer = topLayer;
@@ -15,89 +16,148 @@ public class Settlement
 
     public void SpawnSettlement(Vector2I position)
     {
-        for (int i = 0; i < 5; i++)
+        centerPosition = position;
+        int maxDistance = 3;
+        HashSet<Vector2I> streetPositions = new HashSet<Vector2I>();
+
+        for (int distance = 0; distance <= maxDistance; distance++)
         {
-            int x = GD.RandRange(-3, 3);
-            int y = GD.RandRange(-3, 3);
-            CreateHouse(position + new Vector2I(x, y));
-        }
-        ConnectRoads();
-    }
-
-    private void CreateHouse(Vector2I position)
-    {
-        if (Houses.ContainsKey(position))
-            return;
-        House house = new House();
-        Houses.Add(position, house);
-        _topLayer.SetCell(position, TopLayerTiles.House);
-    }
-
-    private void ConnectRoads()
-    {
-        List<Vector2I> housePositions = new List<Vector2I>(Houses.Keys);
-        HashSet<Vector2I> visited = new HashSet<Vector2I>();
-        PriorityQueue<(Vector2I from, Vector2I to, int distance), int> priorityQueue = new PriorityQueue<(Vector2I from, Vector2I to, int distance), int>();
-
-        visited.Add(housePositions[0]);
-
-        foreach (Vector2I house in housePositions)
-        {
-            if (house != housePositions[0])
+            Vector2I[] directions =
             {
-                int distance = ManhattanDistance(housePositions[0], house);
-                priorityQueue.Enqueue((housePositions[0], house, distance), distance);
+                new Vector2I(-distance, 0),
+                new Vector2I(distance, 0), 
+                new Vector2I(0, -distance),
+                new Vector2I(0, distance)  
+            };
+
+            foreach (var direction in directions)
+            {
+                var roadPosition = position + direction;
+                _topLayer.SetCell(roadPosition, TopLayerTiles.Street);
+                streetPositions.Add(roadPosition);
             }
         }
 
-        while (visited.Count < housePositions.Count && priorityQueue.Count > 0)
+        for (int i = 0; i < 5; i++)
         {
-            (Vector2I from, Vector2I to, int distance) = priorityQueue.Dequeue();
+            EvolveHouse();
+        }
+    }
 
-            if (visited.Contains(to))
-                continue;
+    public void EvolveHouse()
+    {
+        
+    }
 
-            visited.Add(to);
-            CreateRoadBetween(from, to);
-
-            foreach (Vector2I house in housePositions)
+    public void EvolveStreet(Vector2I target)
+    {
+        foreach (var vector2I in FindPathToTarget(target))
+        {
+            if (_topLayer.GetCellTileType(vector2I) == null)
             {
-                if (!visited.Contains(house))
+                _topLayer.SetCell(vector2I, TopLayerTiles.Street);
+                break;
+            }
+        }
+    }
+
+    public List<Vector2I> FindPathToTarget(Vector2I target)
+    {
+        // Priority Queue for A* (sorted by the lowest fScore)
+        var openSet = new PriorityQueue<Vector2I, int>();
+        openSet.Enqueue(centerPosition, 0);
+
+        // Dictionaries to keep track of scores and paths
+        var cameFrom = new Dictionary<Vector2I, Vector2I>();
+        var gScore = new Dictionary<Vector2I, int> { [centerPosition] = 0 };
+        var fScore = new Dictionary<Vector2I, int> { [centerPosition] = Heuristic(centerPosition, target) };
+
+        // While there are tiles to explore
+        while (openSet.Count > 0)
+        {
+            Vector2I current = openSet.Dequeue();
+
+            // If we reached the target, reconstruct the path
+            if (current == target)
+            {
+                return ReconstructPath(cameFrom, current);
+            }
+
+            foreach (var neighbor in GetNeighbors(current))
+            {
+                if (!IsValidTile(neighbor)) continue; // Check if neighbor is a valid tile in the grid
+
+                int tileCost = GetTileCost(neighbor);
+                if (tileCost == int.MaxValue) continue; // Skip invalid tiles (not "empty" or "street")
+
+                // Calculate tentative gScore
+                int tentativeGScore = gScore.GetValueOrDefault(current, int.MaxValue) + tileCost;
+
+                if (tentativeGScore < gScore.GetValueOrDefault(neighbor, int.MaxValue))
                 {
-                    int newDistance = ManhattanDistance(to, house);
-                    priorityQueue.Enqueue((to, house, newDistance), newDistance);
+                    // Update path and scores for this neighbor
+                    cameFrom[neighbor] = current;
+                    gScore[neighbor] = tentativeGScore;
+                    fScore[neighbor] = tentativeGScore + Heuristic(neighbor, target);
+
+                    // Add neighbor to openSet if not already present
+                    if (!openSet.UnorderedItems.Any(item => item.Element == neighbor))
+                    {
+                        openSet.Enqueue(neighbor, fScore[neighbor]);
+                    }
                 }
             }
         }
+
+        // No path was found
+        return null;
     }
 
-    private int ManhattanDistance(Vector2I a, Vector2I b)
+    private bool IsValidTile(Vector2I tile)
     {
-        return Mathf.Abs(a.X - b.X) + Mathf.Abs(a.Y - b.Y);
+        return _topLayer.GetCellTileType(tile) == null || _topLayer.GetCellTileType(tile) == TopLayerTiles.Street;
+    }
+    
+    private int GetTileCost(Vector2I tile)
+    {
+        switch (_topLayer.GetCellTileType(tile))
+        {
+            case null:
+                return 100;
+            case TopLayerTiles.Street:
+                return 1;
+            default:
+                return int.MaxValue;
+        }
     }
 
-    private void CreateRoadBetween(Vector2I start, Vector2I end)
+    private IEnumerable<Vector2I> GetNeighbors(Vector2I position)
     {
-        Vector2I current = start;
-
-        while (current.X != end.X)
+        // Assuming 4-directional movement (up, down, left, right)
+        return new List<Vector2I>
         {
-            current.X += current.X < end.X ? 1 : -1;
+            position + new Vector2I(0, -1), // Up
+            position + new Vector2I(0, 1),  // Down
+            position + new Vector2I(-1, 0), // Left
+            position + new Vector2I(1, 0)   // Right
+        };
+    }
 
-            if (!Houses.ContainsKey(current))
-            {
-                _topLayer.SetCell(current, TopLayerTiles.Street);
-            }
-        }
+    private int Heuristic(Vector2I a, Vector2I b)
+    {
+        // Use Manhattan distance as the heuristic for grid-based movement
+        return Math.Abs(a.X - b.X) + Math.Abs(a.Y - b.Y);
+    }
 
-        while (current.Y != end.Y)
+    private List<Vector2I> ReconstructPath(Dictionary<Vector2I, Vector2I> cameFrom, Vector2I current)
+    {
+        var path = new List<Vector2I>();
+        while (cameFrom.ContainsKey(current))
         {
-            current.Y += current.Y < end.Y ? 1 : -1;
-
-            if (!Houses.ContainsKey(current))
-            {
-                _topLayer.SetCell(current, TopLayerTiles.Street);
-            }
+            path.Add(current);
+            current = cameFrom[current];
         }
+        path.Reverse();
+        return path;
     }
 }

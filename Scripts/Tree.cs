@@ -1,6 +1,5 @@
-namespace NewArcana;
+namespace NewArcana.Scripts;
 
 public class Tree
 {
-    
 }

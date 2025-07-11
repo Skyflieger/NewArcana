@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://5bcd1eoreiuh"
-path="res://.godot/imported/SpiritsTileSet.png-99c6b5bb00f8a0e88f094888f25179ab.ctex"
+uid="uid://crelujrm2kmn2"
+path="res://.godot/imported/ClockHand.png-ed00bc1efbf830cecf96ac5a1cf8c59a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://TileSets/SpiritsTileSet.png"
-dest_files=["res://.godot/imported/SpiritsTileSet.png-99c6b5bb00f8a0e88f094888f25179ab.ctex"]
+source_file="res://ClockHand.png"
+dest_files=["res://.godot/imported/ClockHand.png-ed00bc1efbf830cecf96ac5a1cf8c59a.ctex"]
 
 [params]
 

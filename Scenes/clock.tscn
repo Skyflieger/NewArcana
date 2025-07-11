@@ -1,0 +1,34 @@
+[gd_scene load_steps=4 format=3 uid="uid://bwssgg12rdbxo"]
+
+[ext_resource type="Script" uid="uid://b72uudd5e41p4" path="res://Scripts/Clock.cs" id="1_ga67c"]
+[ext_resource type="Texture2D" uid="uid://ckju1wifq3iq8" path="res://Clock.png" id="1_pdqta"]
+[ext_resource type="Texture2D" uid="uid://crelujrm2kmn2" path="res://ClockHand.png" id="2_ga67c"]
+
+[node name="Clock" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ga67c")
+
+[node name="Clock" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("1_pdqta")
+
+[node name="Handle" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+pivot_offset = Vector2(20, 20)
+texture = ExtResource("2_ga67c")
+
+[node name="Year" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 40.0
+offset_right = 80.0
+offset_bottom = 40.0
+text = "1"

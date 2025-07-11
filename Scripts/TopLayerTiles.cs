@@ -1,5 +1,4 @@
-
-namespace NewArcana;
+namespace NewArcana.Scripts;
 
 public enum TopLayerTiles
 {

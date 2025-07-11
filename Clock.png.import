@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://5bcd1eoreiuh"
-path="res://.godot/imported/SpiritsTileSet.png-99c6b5bb00f8a0e88f094888f25179ab.ctex"
+uid="uid://ckju1wifq3iq8"
+path="res://.godot/imported/Clock.png-bae66fa8d9dfa8650422d296067d330b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://TileSets/SpiritsTileSet.png"
-dest_files=["res://.godot/imported/SpiritsTileSet.png-99c6b5bb00f8a0e88f094888f25179ab.ctex"]
+source_file="res://Clock.png"
+dest_files=["res://.godot/imported/Clock.png-bae66fa8d9dfa8650422d296067d330b.ctex"]
 
 [params]
 
