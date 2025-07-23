@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=3 format=3 uid="uid://b7vkm6uax5ps1"]
+
+[ext_resource type="Script" uid="uid://cljymj7e30yas" path="res://Scripts/Cards/CardScripts/EruptFear.cs" id="1_utyxs"]
+[ext_resource type="Script" uid="uid://dgog64xc6vals" path="res://Scripts/Cards/CardData.cs" id="1_wxiub"]
+
+[resource]
+script = ExtResource("1_wxiub")
+CardName = "Erupt Fear"
+Script = ExtResource("1_utyxs")
+metadata/_custom_type_script = "uid://dgog64xc6vals"

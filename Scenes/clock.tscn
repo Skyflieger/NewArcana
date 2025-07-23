@@ -1,17 +1,23 @@
-[gd_scene load_steps=4 format=3 uid="uid://bwssgg12rdbxo"]
+[gd_scene load_steps=6 format=3 uid="uid://bwssgg12rdbxo"]
 
 [ext_resource type="Script" uid="uid://b72uudd5e41p4" path="res://Scripts/Clock.cs" id="1_ga67c"]
 [ext_resource type="Texture2D" uid="uid://ckju1wifq3iq8" path="res://Clock.png" id="1_pdqta"]
 [ext_resource type="Texture2D" uid="uid://crelujrm2kmn2" path="res://ClockHand.png" id="2_ga67c"]
+[ext_resource type="Texture2D" uid="uid://bnyc8qgrnv6lx" path="res://Play.png" id="4_1ixnv"]
+[ext_resource type="Texture2D" uid="uid://ck8yjbdbv3dhf" path="res://Pause.png" id="5_0t2r4"]
 
-[node name="Clock" type="Control"]
+[node name="Clock" type="Control" node_paths=PackedStringArray("_playButton", "_stopButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = -1.0
+offset_right = -1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ga67c")
+_playButton = NodePath("TextureButton")
+_stopButton = NodePath("TextureButton2")
 
 [node name="Clock" type="TextureRect" parent="."]
 layout_mode = 0
@@ -32,3 +38,23 @@ offset_left = 40.0
 offset_right = 80.0
 offset_bottom = 40.0
 text = "1"
+
+[node name="TextureButton" type="TextureButton" parent="."]
+layout_mode = 0
+offset_left = 57.0
+offset_top = 2.0
+offset_right = 97.0
+offset_bottom = 42.0
+texture_normal = ExtResource("4_1ixnv")
+
+[node name="TextureButton2" type="TextureButton" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 57.0
+offset_top = 2.0
+offset_right = 97.0
+offset_bottom = 42.0
+texture_normal = ExtResource("5_0t2r4")
+
+[connection signal="pressed" from="TextureButton" to="." method="Resume"]
+[connection signal="pressed" from="TextureButton2" to="." method="Pause"]

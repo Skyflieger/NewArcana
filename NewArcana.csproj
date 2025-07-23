@@ -3,12 +3,4 @@
     <TargetFramework>net8.0</TargetFramework>
     <EnableDynamicLoading>true</EnableDynamicLoading>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Update="Scripts\TopLayer.Sanctuaries.cs">
-      <DependentUpon>TopLayer.cs</DependentUpon>
-    </Compile>
-    <Compile Update="Scripts\TopLayer.Settlements.cs">
-      <DependentUpon>TopLayer.cs</DependentUpon>
-    </Compile>
-  </ItemGroup>
 </Project>

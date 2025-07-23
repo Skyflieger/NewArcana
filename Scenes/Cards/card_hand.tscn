@@ -1,0 +1,13 @@
+[gd_scene load_steps=4 format=3 uid="uid://iyk38ffs4x7j"]
+
+[ext_resource type="Script" uid="uid://b2up3smnor8g5" path="res://Scripts/Cards/CardHand.cs" id="1_xdxna"]
+[ext_resource type="PackedScene" uid="uid://d3ivixg37uucp" path="res://Scenes/Cards/card.tscn" id="2_7fq6i"]
+
+[sub_resource type="Theme" id="Theme_xdxna"]
+HBoxContainer/constants/separation = 50
+
+[node name="CardHand" type="HBoxContainer"]
+theme = SubResource("Theme_xdxna")
+alignment = 1
+script = ExtResource("1_xdxna")
+_cardScene = ExtResource("2_7fq6i")

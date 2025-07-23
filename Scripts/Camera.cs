@@ -17,7 +17,8 @@ public partial class Camera : Camera2D
 
     public void AdjustSetZoom(Vector2 delta)
     {
-        Zoom += delta;
+        if(Zoom.X + delta.X > 0.2f || Zoom.X + delta.X < 2 )
+            Zoom += delta;
     }
 
     public override void _UnhandledInput(InputEvent @event)

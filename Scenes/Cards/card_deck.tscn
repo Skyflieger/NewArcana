@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://diyqyiw7t773r"]
+
+[ext_resource type="Script" uid="uid://bkq75268kmgae" path="res://Scripts/Cards/CardDeck.cs" id="1_s1j1c"]
+[ext_resource type="Texture2D" uid="uid://8fvdpd4beaau" path="res://CardDeck.png" id="2_3ywy8"]
+
+[node name="CardDeck" type="VBoxContainer" node_paths=PackedStringArray("_amountLabel")]
+offset_right = 32.0
+offset_bottom = 59.0
+script = ExtResource("1_s1j1c")
+_amountLabel = NodePath("Label")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+text = "0"
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 2
+texture = ExtResource("2_3ywy8")

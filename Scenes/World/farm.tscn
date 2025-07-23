@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://brtjyiom1eio8"]
+
+[ext_resource type="Script" uid="uid://cvr14ka2mxgsl" path="res://Scripts/World/Tiles/Farm.cs" id="1_1bveb"]
+
+[node name="Farm" type="Node"]
+script = ExtResource("1_1bveb")

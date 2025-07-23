@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dpvfv1w577xbq"]
+
+[ext_resource type="Script" uid="uid://b3tpqky203rbo" path="res://Scripts/World/Tiles/City.cs" id="1_fc2fv"]
+
+[node name="City" type="Node"]
+script = ExtResource("1_fc2fv")
